@@ -1,4 +1,4 @@
-package ch.schmarcel.ConsoleUtil.ParameterCompiler;
+package ch.schmarcel.console.parameter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,21 +10,21 @@ public class ParameterParser {
         this.parameterChar = parameterChar;
     }
 
-    public HashMap<String, String> parse(String[] args) {
-        HashMap<String, String> parameters = new HashMap<>();
+    public ArgumentList parse(String[] args) {
+        HashMap<String, String> arguments = new HashMap<>();
         for (int i = 0; i < args.length; i++) {
             if (args[i].charAt(0) == parameterChar) {
-                parameters.put(args[i].substring(1), args.length > i+1 ? args[i + 1] : "");
+                arguments.put(args[i].substring(1), args.length > i+1 ? args[i + 1] : "");
             }
         }
-        return parameters;
+        return new ArgumentList(arguments);
     }
 
-    public HashMap<String, String> parse(String string) {
+    public ArgumentList parse(String string) {
         return parse(string.split(" "));
     }
 
-    public HashMap<String, String> parse(List<String> args) {
+    public ArgumentList parse(List<String> args) {
         return parse(args.toArray(new String[0]));
     }
 }

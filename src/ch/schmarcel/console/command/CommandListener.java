@@ -1,6 +1,7 @@
-package ch.schmarcel.ConsoleUtil.CommandListener;
+package ch.schmarcel.console.command;
 
-import ch.schmarcel.ConsoleUtil.ParameterCompiler.ParameterParser;
+import ch.schmarcel.console.parameter.ArgumentList;
+import ch.schmarcel.console.parameter.ParameterParser;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -20,14 +21,13 @@ public class CommandListener implements Runnable{
     }
 
     public void addCommand(String name, Command command) {
-        command.setListener(this);
         commands.put(name.toLowerCase(), command);
     }
 
     public void start() {
         running = true;
         Thread thread = new Thread(this);
-        thread.setName("CommandListener");
+        thread.setName("command");
         thread.start();
     }
 
@@ -46,18 +46,36 @@ public class CommandListener implements Runnable{
         try {
             String s = scanner.nextLine();
             if (s != null)
-                execute(s);
+                interpret(s);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void execute(String s) {
+    private void interpret(String s) {
         String[] input = s.split(" ");
         if (input.length >= 1 && commands.containsKey(input[0].toLowerCase())) {
             Command c = commands.get(input[0].toLowerCase());
-            ArgumentList arguments = new ArgumentList(parser.parse(input));
-            c.execute(arguments);
+
+            String[] argStrings = new String[input.length - 1];
+            System.arraycopy(input, 1, argStrings, 0, argStrings.length);
+
+            ArgumentList args = parser.parse(argStrings);
+
+            for (String name : c.getRequiredArgs()) {
+                if (!args.hasArgument(name)) {
+                    missingParameter(name);
+                    return;
+                }
+            }
+
+            for (String name : args.getNamesAsArray()) {
+                if (!(c.getRequiredArgs().contains(name) || c.getOptionalArgs().contains(name))) {
+                    unknownParameter(name);
+                }
+            }
+
+            c.execute(args);
         } else {
             unknownCommand(input[0].toLowerCase());
         }

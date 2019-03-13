@@ -1,4 +1,4 @@
-package ch.schmarcel.ConsoleUtil.CommandListener;
+package ch.schmarcel.console.command;
 
 public class Test {
     public static void main(String[] args) {
@@ -20,8 +20,8 @@ public class Test {
         };
         listener1.addCommand("start", new Command(new String[] {"p", "t"}, new String[] {"e"},
                 cArgs -> {
-                    System.out.println("Executed 'Start' with Parameters: p=" + cArgs.getArgument("p") +
-                    " t=" + cArgs.getArgument("t") + (cArgs.hasArgument("e")?" e="+cArgs.getArgument("e"):""));
+                    System.out.println("Executed 'Start' with Parameters: p=" + cArgs.getString("p") +
+                    " t=" + cArgs.getString("t") + (cArgs.hasArgument("e")?" e="+cArgs.getString("e"):""));
                 }));
         listener1.start();
         while (listener1.isRunning()) {
