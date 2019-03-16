@@ -1,11 +1,7 @@
 package ch.schmarcel.console.command;
 
-import ch.schmarcel.console.parameter.ArgumentList;
-import ch.schmarcel.console.parameter.ParameterParser;
-
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class CommandListener implements Runnable{
     private Scanner scanner;
@@ -54,31 +50,32 @@ public class CommandListener implements Runnable{
 
     private void interpret(String s) {
         String[] input = s.split(" ");
-        if (input.length >= 1 && commands.containsKey(input[0].toLowerCase())) {
-            Command c = commands.get(input[0].toLowerCase());
 
-            String[] argStrings = new String[input.length - 1];
-            System.arraycopy(input, 1, argStrings, 0, argStrings.length);
+        if (input.length < 1)
+            return;
 
-            ArgumentList args = parser.parse(argStrings);
+        String commandName = input[0].toLowerCase();
 
-            for (String name : c.getRequiredArgs()) {
-                if (!args.hasArgument(name)) {
-                    missingParameter(name);
-                    return;
-                }
-            }
-
-            for (String name : args.getNamesAsArray()) {
-                if (!(c.getRequiredArgs().contains(name) || c.getOptionalArgs().contains(name))) {
-                    unknownParameter(name);
-                }
-            }
-
-            c.execute(args);
-        } else {
-            unknownCommand(input[0].toLowerCase());
+        if (!commands.containsKey(commandName)) {
+            unknownCommand(commandName);
+            return;
         }
+
+        Command c = commands.get(commandName);
+
+        List<String> argStrings = new ArrayList<>(Arrays.asList(input));
+        argStrings.remove(0);
+
+        ArgumentList argumentList = parser.parse(argStrings, c.getArgumentConstraints());
+        parser.parse(argumentList, argStrings, c.getArgumentConstraints());
+
+        String missing = new InputValidator(c.getArgumentConstraints()).validate(argumentList);
+        if (missing != null) {
+            missingParameter(missing);
+            return;
+        }
+
+        c.execute(argumentList);
     }
 
     public boolean isRunning() {
@@ -90,10 +87,6 @@ public class CommandListener implements Runnable{
     }
 
     public void missingParameter(String parameter) {
-
-    }
-
-    public void unknownParameter(String parameter) {
 
     }
 }

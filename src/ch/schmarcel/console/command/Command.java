@@ -1,35 +1,29 @@
 package ch.schmarcel.console.command;
 
-import ch.schmarcel.console.parameter.ArgumentList;
-
-import java.util.Arrays;
-import java.util.List;
-
 public class Command {
     private CommandEvent event;
-    private List<String> requiredArgs, optionalArgs;
+    private ArgumentConstraints argumentConstraints;
 
-    public List<String> getRequiredArgs() {
-        return requiredArgs;
+    public ArgumentConstraints getArgumentConstraints() {
+        return argumentConstraints;
     }
 
-    public List<String> getOptionalArgs() {
-        return optionalArgs;
-    }
-
-    public Command(String[] requiredArgs, String[] optionalArgs, CommandEvent event) {
+    public Command(ArgumentConstraints argumentConstraints, CommandEvent event) {
         this.event = event;
-        this.requiredArgs = Arrays.asList(requiredArgs);
-        this.optionalArgs = Arrays.asList(optionalArgs);
-    }
-
-    public Command(List<String> requiredArgs, List<String> optionalArgs, CommandEvent event) {
-        this.event = event;
-        this.requiredArgs = requiredArgs;
-        this.optionalArgs = optionalArgs;
+        this.argumentConstraints = argumentConstraints;
     }
 
     public void execute(ArgumentList args) {
         event.event(args);
+    }
+
+    private class Arg {
+        public String name;
+        public boolean required;
+
+        public Arg(String name, boolean required) {
+            this.name = name;
+            this.required = required;
+        }
     }
 }
