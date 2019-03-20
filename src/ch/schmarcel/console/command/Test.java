@@ -1,6 +1,8 @@
 package ch.schmarcel.console.command;
 
 public class Test {
+    private static CommandListener listener;
+
     public static void main(String[] args) {
         ArgumentConstraints progArgConstraints = new ArgumentConstraints();
         progArgConstraints.addOrderedArguments("ip", "port");
@@ -10,13 +12,13 @@ public class Test {
 
         System.out.println("Has IP: " + argumentList.hasArgument("ip") + " Has Port: " + argumentList.hasArgument("port"));
 
-        InputValidator validator = new InputValidator(progArgConstraints);
+        ArgumentValidator validator = new ArgumentValidator(progArgConstraints);
         String missing = validator.validate(argumentList);
         if (missing != null) {
             System.out.println("missing argument " + missing);
         }
 
-        CommandListener listener1 = new CommandListener(System.in, '/') {
+        listener = new CommandListener(System.in, createCommands(), '/') {
             @Override
             public void unknownCommand(String command) {
                 System.out.println("Unknown Command: " + command);
@@ -28,10 +30,15 @@ public class Test {
             }
         };
 
+        listener.start();
+    }
+
+    private static CommandList createCommands() {
+        CommandList commandList = new CommandList();
+
         ArgumentConstraints constraints = new ArgumentConstraints();
         constraints.addOrderedArguments("name", "age");
         constraints.addOptionalArguments("city", "gender");
-        constraints.addRequiredArguments("lol");
 
         Command command = new Command(constraints, argList -> {
             String b1 = argList.hasArgument("city") || argList.hasArgument("gender") ? ", " : " and ";
@@ -46,15 +53,13 @@ public class Test {
             System.out.println(p1 + p2 + p3);
         });
 
-        listener1.addCommand("print", command);
+        Command stopCommand = new Command(new ArgumentConstraints(), argList -> {
+            listener.stop();
+        });
 
-        while (listener1.isRunning()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        listener1.start();
+        commandList.add("print", command);
+        commandList.add("stop", stopCommand);
+
+        return commandList;
     }
 }

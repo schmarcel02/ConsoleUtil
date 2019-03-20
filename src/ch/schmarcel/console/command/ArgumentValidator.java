@@ -1,9 +1,9 @@
 package ch.schmarcel.console.command;
 
-public class InputValidator {
+public class ArgumentValidator {
     private ArgumentConstraints argumentConstraints;
 
-    public InputValidator(ArgumentConstraints argumentConstraints) {
+    public ArgumentValidator(ArgumentConstraints argumentConstraints) {
         this.argumentConstraints = argumentConstraints;
     }
 

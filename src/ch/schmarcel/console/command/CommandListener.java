@@ -7,23 +7,32 @@ public class CommandListener implements Runnable{
     private Scanner scanner;
     private ParameterParser parser;
 
-    private HashMap<String, Command> commands = new HashMap<>();
+    public CommandList commands;
 
     private boolean running = false;
 
-    public CommandListener(InputStream stream, char parameterChar) {
+    public CommandListener(InputStream stream, CommandList commands, char parameterChar) {
+        this.commands = commands;
         scanner = new Scanner(stream);
-        this.parser = new ParameterParser(parameterChar);
+        parser = new ParameterParser(parameterChar);
     }
 
-    public void addCommand(String name, Command command) {
-        commands.put(name.toLowerCase(), command);
+    public CommandListener(InputStream stream, CommandList commands) {
+        this(stream, commands, '-');
+    }
+
+    public CommandListener(InputStream stream, char parameterChar) {
+        this(stream, new CommandList(), parameterChar);
+    }
+
+    public CommandListener(InputStream stream) {
+        this(stream, new CommandList(), '-');
     }
 
     public void start() {
         running = true;
         Thread thread = new Thread(this);
-        thread.setName("command");
+        thread.setName("commandListener");
         thread.start();
     }
 
@@ -56,7 +65,7 @@ public class CommandListener implements Runnable{
 
         String commandName = input[0].toLowerCase();
 
-        if (!commands.containsKey(commandName)) {
+        if (!commands.hasCommand(commandName)) {
             unknownCommand(commandName);
             return;
         }
@@ -69,7 +78,7 @@ public class CommandListener implements Runnable{
         ArgumentList argumentList = parser.parse(argStrings, c.getArgumentConstraints());
         parser.parse(argumentList, argStrings, c.getArgumentConstraints());
 
-        String missing = new InputValidator(c.getArgumentConstraints()).validate(argumentList);
+        String missing = new ArgumentValidator(c.getArgumentConstraints()).validate(argumentList);
         if (missing != null) {
             missingParameter(missing);
             return;

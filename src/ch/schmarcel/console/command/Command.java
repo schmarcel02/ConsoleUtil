@@ -13,17 +13,12 @@ public class Command {
         this.argumentConstraints = argumentConstraints;
     }
 
-    public void execute(ArgumentList args) {
-        event.event(args);
+    public Command(CommandEvent event) {
+        this.event = event;
+        this.argumentConstraints = new ArgumentConstraints();
     }
 
-    private class Arg {
-        public String name;
-        public boolean required;
-
-        public Arg(String name, boolean required) {
-            this.name = name;
-            this.required = required;
-        }
+    public void execute(ArgumentList args) {
+        event.event(args);
     }
 }
