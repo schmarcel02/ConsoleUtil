@@ -6,17 +6,20 @@ public class Test {
     public static void main(String[] args) {
         ArgumentConstraints progArgConstraints = new ArgumentConstraints();
         progArgConstraints.addOrderedArguments("ip", "port");
+        progArgConstraints.addOptionalArguments("name");
 
         ParameterParser parser = new ParameterParser('-');
         ArgumentList argumentList = parser.parse(args, progArgConstraints);
 
-        System.out.println("Has IP: " + argumentList.hasArgument("ip") + " Has Port: " + argumentList.hasArgument("port"));
+        ArgumentValidator validator = new ArgumentValidator(progArgConstraints, name -> System.out.println("Missing argument: " + name));
 
-        ArgumentValidator validator = new ArgumentValidator(progArgConstraints);
-        String missing = validator.validate(argumentList);
-        if (missing != null) {
-            System.out.println("missing argument " + missing);
-        }
+        if (!validator.validate(argumentList))
+            return;
+
+        System.out.println("IP: " + argumentList.getArgument("ip"));
+        System.out.println("Port: " + argumentList.getArgument("port"));
+        if (argumentList.hasArgument("name"))
+            System.out.println("Name: " + argumentList.getArgument("name"));
 
         listener = new CommandListener(System.in, createCommands(), '/') {
             @Override
@@ -44,11 +47,9 @@ public class Test {
             String b1 = argList.hasArgument("city") || argList.hasArgument("gender") ? ", " : " and ";
             String b2 = argList.hasArgument("city") && argList.hasArgument("gender") ? ", " : " and ";
 
-            String v1 = argList.hasArgument("gender") ? argList.getValue("gender").toLowerCase().equals("male") ? "superior male" : "inferior female" : "";
-
             String p1 = "My name is " + argList.getValue("name") + b1 + "i am " + argList.getValue("age") + " years old";
             String p2 = argList.hasArgument("city") ? b2 + "i live in " + argList.getValue("city") : "";
-            String p3 = argList.hasArgument("gender") ? " and i am of the " + v1 + " gender" : "";
+            String p3 = argList.hasArgument("gender") ? " and i am of the " + argList.getValue("gender") + " gender" : "";
 
             System.out.println(p1 + p2 + p3);
         });

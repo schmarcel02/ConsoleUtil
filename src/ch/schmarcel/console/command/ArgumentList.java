@@ -1,6 +1,7 @@
 package ch.schmarcel.console.command;
 
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 
 public class ArgumentList {
     private HashMap<String, Argument> arguments;
@@ -29,5 +30,9 @@ public class ArgumentList {
 
     public boolean hasArgument(String name) {
         return arguments.containsKey(name);
+    }
+
+    public void forEach(BiConsumer<String, Argument> action) {
+        arguments.forEach(action);
     }
 }

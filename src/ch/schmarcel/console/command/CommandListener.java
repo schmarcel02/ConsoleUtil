@@ -78,11 +78,8 @@ public class CommandListener implements Runnable{
         ArgumentList argumentList = parser.parse(argStrings, c.getArgumentConstraints());
         parser.parse(argumentList, argStrings, c.getArgumentConstraints());
 
-        String missing = new ArgumentValidator(c.getArgumentConstraints()).validate(argumentList);
-        if (missing != null) {
-            missingParameter(missing);
+        if (!new ArgumentValidator(c.getArgumentConstraints(), this::missingParameter).validate(argumentList))
             return;
-        }
 
         c.execute(argumentList);
     }
