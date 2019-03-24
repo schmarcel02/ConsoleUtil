@@ -15,12 +15,12 @@ public class ArgumentConstraints {
         return orderedArgs;
     }
 
-    public ArgumentConstraints addArgument(String name, ArgumentConstraint.Type type, boolean required) {
+    public ArgumentConstraints addArgument(String name, Type type, boolean required) {
         args.add(new ArgumentConstraint(name, type, required));
         return this;
     }
 
-    public ArgumentConstraints addOrderedArgument(String name, ArgumentConstraint.Type type) {
+    public ArgumentConstraints addOrderedArgument(String name, Type type) {
         orderedArgs.add(new ArgumentConstraint(name, type, true));
         return this;
     }

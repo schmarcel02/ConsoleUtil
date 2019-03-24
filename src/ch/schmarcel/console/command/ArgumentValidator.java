@@ -6,9 +6,9 @@ import java.util.function.Consumer;
 public class ArgumentValidator {
     private ArgumentConstraints argumentConstraints;
     private Consumer<String> onMissingArgument;
-    private BiConsumer<String, ArgumentConstraint.Type> onWrongType;
+    private BiConsumer<String, Type> onWrongType;
 
-    public ArgumentValidator(ArgumentConstraints argumentConstraints, Consumer<String> onMissingArgument, BiConsumer<String, ArgumentConstraint.Type> onWrongType) {
+    public ArgumentValidator(ArgumentConstraints argumentConstraints, Consumer<String> onMissingArgument, BiConsumer<String, Type> onWrongType) {
         this.argumentConstraints = argumentConstraints;
         this.onMissingArgument = onMissingArgument;
         this.onWrongType = onWrongType;
@@ -18,7 +18,7 @@ public class ArgumentValidator {
         this(argumentConstraints, onMissingArgument, (name, type) -> System.out.println("Argument '" + name + "' is not of type: " + type.name()));
     }
 
-    public ArgumentValidator(ArgumentConstraints argumentConstraints, BiConsumer<String, ArgumentConstraint.Type> onWrongType) {
+    public ArgumentValidator(ArgumentConstraints argumentConstraints, BiConsumer<String, Type> onWrongType) {
         this(argumentConstraints, (name) -> System.out.println("Missing argument: " + name), onWrongType);
     }
 
@@ -33,7 +33,7 @@ public class ArgumentValidator {
                 return false;
             }
 
-            if (!validateType(argumentList.getArgument(argument.name), argument)) {
+            if (!validateType(argumentList.getString(argument.name), argument)) {
                 onWrongType.accept(argument.name, argument.type);
                 return false;
             }
@@ -45,7 +45,7 @@ public class ArgumentValidator {
                 return false;
             }
 
-            if (argumentList.hasArgument(argument.name) && !validateType(argumentList.getArgument(argument.name), argument)) {
+            if (argumentList.hasArgument(argument.name) && !validateType(argumentList.getString(argument.name), argument)) {
                 onWrongType.accept(argument.name, argument.type);
                 return false;
             }

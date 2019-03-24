@@ -18,10 +18,40 @@ public class ArgumentList {
         arguments.remove(name);
     }
 
-    public String getArgument(String name) {
-        if (!hasArgument(name))
-            return null;
+    public String getString(String name) {
         return arguments.get(name).value;
+    }
+
+    public byte getByte(String name) {
+        return Byte.parseByte(getString(name));
+    }
+
+    public short getShort(String name) {
+        return Short.parseShort(getString(name));
+    }
+
+    public int getInteger(String name) {
+        return Integer.parseInt(getString(name));
+    }
+
+    public long getLong(String name) {
+        return Long.parseLong(getString(name));
+    }
+
+    public float getFloat(String name) {
+        return Float.parseFloat(getString(name));
+    }
+
+    public double getDouble(String name) {
+        return Double.parseDouble(getString(name));
+    }
+
+    public boolean getBoolean(String name) {
+        return Boolean.parseBoolean(getString(name));
+    }
+
+    public char getChar(String name) {
+        return getString(name).charAt(0);
     }
 
     public boolean hasArgument(String name) {

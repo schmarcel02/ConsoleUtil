@@ -6,7 +6,7 @@ public class Test {
     public static void main(String[] args) {
         ArgumentConstraints progArgConstraints = new ArgumentConstraints()
                 .addOrderedArgument("ip")
-                .addOrderedArgument("port", ArgumentConstraint.Type.INTEGER);
+                .addOrderedArgument("port", Type.INTEGER);
 
         ArgumentParser parser = new ArgumentParser('-');
         ArgumentList argumentList = parser.parse(args, progArgConstraints);
@@ -16,10 +16,10 @@ public class Test {
         if (!validator.validate(argumentList))
             return;
 
-        System.out.println("IP: " + argumentList.getArgument("ip"));
-        System.out.println("Port: " + argumentList.getArgument("port"));
+        System.out.println("IP: " + argumentList.getString("ip"));
+        System.out.println("Port: " + argumentList.getString("port"));
         if (argumentList.hasArgument("name"))
-            System.out.println("Name: " + argumentList.getArgument("name"));
+            System.out.println("Name: " + argumentList.getString("name"));
 
         listener = new CommandListener(System.in, createCommands(), '/') {
             @Override
@@ -41,17 +41,17 @@ public class Test {
 
         ArgumentConstraints constraints = new ArgumentConstraints()
                 .addOrderedArgument("name")
-                .addOrderedArgument("age", ArgumentConstraint.Type.INTEGER)
+                .addOrderedArgument("age", Type.INTEGER)
                 .addArgument("city", false)
                 .addArgument("gender", false);
 
-        Command command = new Command(constraints, argList -> {
+        Command printCommand = new Command(constraints, argList -> {
             String b1 = argList.hasArgument("city") || argList.hasArgument("gender") ? ", " : " and ";
             String b2 = argList.hasArgument("city") && argList.hasArgument("gender") ? ", " : " and ";
 
-            String p1 = "My name is " + argList.getArgument("name") + b1 + "i am " + argList.getArgument("age") + " years old";
-            String p2 = argList.hasArgument("city") ? b2 + "i live in " + argList.getArgument("city") : "";
-            String p3 = argList.hasArgument("gender") ? " and i am of the " + argList.getArgument("gender") + " gender" : "";
+            String p1 = "My name is " + argList.getString("name") + b1 + "i am " + argList.getString("age") + " years old";
+            String p2 = argList.hasArgument("city") ? b2 + "i live in " + argList.getString("city") : "";
+            String p3 = argList.hasArgument("gender") ? " and i am of the " + argList.getString("gender") + " gender" : "";
 
             System.out.println(p1 + p2 + p3);
         });
@@ -60,7 +60,7 @@ public class Test {
             listener.stop();
         });
 
-        commandList.add("print", command);
+        commandList.add("print", printCommand);
         commandList.add("stop", stopCommand);
 
         return commandList;

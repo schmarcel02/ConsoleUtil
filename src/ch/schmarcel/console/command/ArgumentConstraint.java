@@ -14,8 +14,4 @@ public class ArgumentConstraint {
     public ArgumentConstraint(String name, boolean required) {
         this(name, Type.STRING, required);
     }
-
-    public enum Type {
-        BYTE, SHORT, INTEGER, LONG, FLOAT, DOUBLE, STRING, CHAR, BOOLEAN, EMPTY
-    }
 }
