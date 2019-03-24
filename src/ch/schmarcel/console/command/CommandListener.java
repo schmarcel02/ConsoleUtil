@@ -3,9 +3,9 @@ package ch.schmarcel.console.command;
 import java.io.InputStream;
 import java.util.*;
 
-public class CommandListener implements Runnable{
+public class CommandListener implements Runnable {
     private Scanner scanner;
-    private ParameterParser parser;
+    private ArgumentParser parser;
 
     public CommandList commands;
 
@@ -14,7 +14,7 @@ public class CommandListener implements Runnable{
     public CommandListener(InputStream stream, CommandList commands, char parameterChar) {
         this.commands = commands;
         scanner = new Scanner(stream);
-        parser = new ParameterParser(parameterChar);
+        parser = new ArgumentParser(parameterChar);
     }
 
     public CommandListener(InputStream stream, CommandList commands) {
@@ -76,7 +76,10 @@ public class CommandListener implements Runnable{
         argStrings.remove(0);
 
         ArgumentList argumentList = parser.parse(argStrings, c.getArgumentConstraints());
-        parser.parse(argumentList, argStrings, c.getArgumentConstraints());
+
+        argumentList.forEach((n, a) -> {
+            System.out.println(n + " -> " + a.value);
+        });
 
         if (!new ArgumentValidator(c.getArgumentConstraints(), this::missingParameter).validate(argumentList))
             return;

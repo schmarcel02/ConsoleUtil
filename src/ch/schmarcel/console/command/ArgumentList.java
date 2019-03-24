@@ -6,10 +6,6 @@ import java.util.function.BiConsumer;
 public class ArgumentList {
     private HashMap<String, Argument> arguments;
 
-    public HashMap<String, Argument> getArguments() {
-        return arguments;
-    }
-
     public ArgumentList() {
         this.arguments = new HashMap<>();
     }
@@ -18,11 +14,11 @@ public class ArgumentList {
         arguments.put(name, new Argument(name, value));
     }
 
-    public Argument getArgument(String name) {
-        return arguments.get(name);
+    public void removeArgument(String name) {
+        arguments.remove(name);
     }
 
-    public String getValue(String name) {
+    public String getArgument(String name) {
         if (!hasArgument(name))
             return null;
         return arguments.get(name).value;

@@ -15,26 +15,23 @@ public class ArgumentConstraints {
         return orderedArgs;
     }
 
-    public void addArgument(String name, boolean required) {
+    public ArgumentConstraints addArgument(String name, ArgumentConstraint.Type type, boolean required) {
+        args.add(new ArgumentConstraint(name, type, required));
+        return this;
+    }
+
+    public ArgumentConstraints addOrderedArgument(String name, ArgumentConstraint.Type type) {
+        orderedArgs.add(new ArgumentConstraint(name, type, true));
+        return this;
+    }
+
+    public ArgumentConstraints addArgument(String name, boolean required) {
         args.add(new ArgumentConstraint(name, required));
+        return this;
     }
 
-    public void addRequiredArguments(String... names) {
-        for (String name : names)
-            addArgument(name, true);
-    }
-
-    public void addOptionalArguments(String... names) {
-        for (String name : names)
-            addArgument(name, false);
-    }
-
-    public void addOrderedArgument(String name) {
+    public ArgumentConstraints addOrderedArgument(String name) {
         orderedArgs.add(new ArgumentConstraint(name, true));
-    }
-
-    public void addOrderedArguments(String... names) {
-        for (String name : names)
-            addOrderedArgument(name);
+        return this;
     }
 }
