@@ -77,10 +77,6 @@ public class CommandListener implements Runnable {
 
         ArgumentList argumentList = parser.parse(argStrings, c.getArgumentConstraints());
 
-        argumentList.forEach((n, a) -> {
-            System.out.println(n + " -> " + a.value);
-        });
-
         if (!new ArgumentValidator(c.getArgumentConstraints(), this::missingParameter).validate(argumentList))
             return;
 
